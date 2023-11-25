@@ -6,6 +6,7 @@ import { useRouter } from "vue-router";
 
 import { formatMonthDay, getDiffDays } from '@/utils/format_date'
 import { useHome } from '@/stores/modules/home';
+import { useMainStore } from '@/stores/modules/main';
 
 //  城市/我的位置
 const router = useRouter();
@@ -29,17 +30,20 @@ const dataRangeClick = () => {
   calendarShow.value = true
 }
 
-
-const nowDate = new Date()
-const newDate = new Date()
-newDate.setDate(nowDate.getDate() + 1)
+// 日历信息
+// const nowDate = new Date()
+// const newDate = new Date()
+// newDate.setDate(nowDate.getDate() + 1)
+const mainStore = useMainStore()
+const {startDate,endDate } = storeToRefs(mainStore)
 
 // 默认入住时间
-const startDate = ref(formatMonthDay(nowDate))
+const startDateStr = ref(formatMonthDay(startDate.value))
 // 默认离店时间
-const endDate = ref(formatMonthDay(newDate))
+const endDateStr = ref(formatMonthDay(endDate.value))
 // 停留时间
-const stayCount = ref(getDiffDays(nowDate, newDate))
+// const stayCount = ref(getDiffDays(startDate.value, endDate.value))
+const stayCount = ref(1)
 
 // 日历选择 
 const onConfirm = (value) => {
@@ -47,8 +51,10 @@ const onConfirm = (value) => {
   const endCalendar = value[1]
 
   // 修改入住和离店时间
-  startDate.value = formatMonthDay(startCalendar)
-  endDate.value = formatMonthDay(endCalendar)
+  // startDate.value = formatMonthDay(startCalendar)
+  // endDate.value = formatMonthDay(endCalendar)
+  mainStore.startDate = startCalendar
+  mainStore.endDate = endCalendar
 
   // 修改停留时间
   stayCount.value = getDiffDays(startCalendar, endCalendar)
@@ -105,14 +111,14 @@ const searchBtnClick = () => {
       <div class="start">
         <div class="date">
           <div class="tip">入住</div>
-          <div class="time">{{ startDate }}</div>
+          <div class="time">{{ startDateStr }}</div>
         </div>
       </div>
 
       <div class="stay">共 {{ stayCount }} 晚 </div>
       <div class="end">
         <div class="tip">离店</div>
-        <div class="time">{{ endDate }}</div>
+        <div class="time">{{ endDateStr }}</div>
       </div>
     </div>
 

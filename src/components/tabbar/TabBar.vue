@@ -1,10 +1,17 @@
 <script setup>
-import { ref } from 'vue'
+import { ref,watch } from 'vue'
 
 import { tabbarData } from '@/assets/data/tabbarData'
 import { getAssetURL } from '@/utils/load_assets'
+import { useRoute } from 'vue-router'
 
 const tabbarActive = ref(0);
+const route = useRoute()
+watch(route,newRoure => {
+  const index = tabbarData.findIndex(item => item.path === newRoure.path)
+  if(index === -1) return
+  tabbarActive.value = index
+})
 </script>
 
 
